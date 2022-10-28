@@ -8,11 +8,11 @@ interface BackButtonProps extends BorderlessButtonProps {
   color?: string;
 }
 
-export function BackButton({ color }: BackButtonProps) {
+export function BackButton({ color, ...rest }: BackButtonProps) {
   const theme = useTheme();
 
   return (
-    <BackButtonContainer>
+    <BackButtonContainer {...rest}>
       <MaterialIcons name="chevron-left" size={24} color={color ? color : theme.colors.text} />
     </BackButtonContainer>
   );

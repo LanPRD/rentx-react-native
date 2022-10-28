@@ -17,5 +17,5 @@ export const AccessoryContainer = styled.View`
 export const Name = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary_500};
   color: ${({ theme }) => theme.colors.text};
-  font-size: ${RFValue(14)}px;
+  font-size: ${RFValue(12)}px;
 `;

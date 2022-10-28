@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 
 interface ImageIndexProps {
@@ -27,7 +28,7 @@ export const ImageIndex = styled.View<ImageIndexProps>`
 `;
 
 export const CarImageWrapper = styled.View`
-  width: 100%;
+  width: ${Dimensions.get("window").width}px;
   height: 132px;
 
   justify-content: center;

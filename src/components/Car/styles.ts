@@ -1,7 +1,8 @@
 import styled from "styled-components/native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { RectButton } from "react-native-gesture-handler";
 
-export const CarContainer = styled.View`
+export const CarContainer = styled(RectButton as new (props: any) => RectButton)`
   width: 100%;
   height: 126px;
 

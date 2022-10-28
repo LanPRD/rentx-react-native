@@ -47,7 +47,7 @@ A proposta deste repositório é aquirir conhecimentos em **React Native** utili
 ## 📁 Clonando repositório
 
 ```bash
-$ git clone https://github.com/LanPRD/simple-marketplace-react-native.git
+$ git clone https://github.com/LanPRD/rentx-react-native.git
 
 $ cd rentx
 ```

@@ -1,8 +1,10 @@
-import { FlatList } from "react-native";
+import { FlatList, FlatListProps } from "react-native";
+import { GestureHandlerRootView, RectButton } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { CarDTO } from "../../dtos/CarDTO";
 
-export const HomeContainer = styled.View`
+export const HomeContainer = styled(GestureHandlerRootView)`
   flex: 1;
   background-color: ${({ theme }) => theme.colors.background_primary};
 `;
@@ -29,7 +31,7 @@ export const TotalCars = styled.Text`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-export const CarList = styled(FlatList).attrs({
+export const CarList = styled(FlatList as new (props: FlatListProps<CarDTO>) => FlatList<CarDTO>).attrs({
   contentContainerStyle: {
     padding: 24
   },

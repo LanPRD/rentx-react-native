@@ -1,19 +1,29 @@
+import { StatusBar, StyleSheet } from "react-native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import { useTheme } from "styled-components";
+import Animated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue
+} from "react-native-reanimated";
+
 import { Accessory } from "../../components/Accessory";
 import { BackButton } from "../../components/BackButton";
 import { ImageSlider } from "../../components/ImageSlider";
+import { Button } from "../../components/Button";
 
-import SpeedSvg from "../../assets/speed.svg";
-import AccelerationSvg from "../../assets/acceleration.svg";
-import ForceSvg from "../../assets/force.svg";
-import GasolineSvg from "../../assets/gasoline.svg";
-import ExchangeSvg from "../../assets/exchange.svg";
-import PeopleSvg from "../../assets/people.svg";
+import { getAccessotyIcon } from "../../utils/getAccessoryIcon";
+
+import { RootStackParamList } from "../../@types/navigation";
 
 import {
   CarDetailsContainer,
   Header,
   CarImages,
-  Content,
   Details,
   Description,
   Brand,
@@ -22,47 +32,104 @@ import {
   Period,
   Price,
   About,
-  Acessories
+  Accessories,
+  Footer
 } from "./styles";
 
+type CarDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, "CarDetails">;
+type CarDetailsScreenRouteProp = RouteProp<RootStackParamList, "CarDetails">;
+
 export function CarDetails() {
+  const navigation = useNavigation<CarDetailsScreenNavigationProp>();
+  const route = useRoute<CarDetailsScreenRouteProp>();
+  const { car } = route.params;
+
+  const theme = useTheme();
+
+  const scrollY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    scrollY.value = event.contentOffset.y;
+  });
+
+  const headerStyleAnimation = useAnimatedStyle(() => {
+    return {
+      height: interpolate(scrollY.value, [0, 200], [200, 70], Extrapolate.CLAMP)
+    };
+  });
+
+  const sliderCarsStyleAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [0, 150], [1, 0], Extrapolate.CLAMP)
+    };
+  });
+
+  function handleGoToSchedulingScreen() {
+    navigation.navigate("Scheduling", { car });
+  }
+
+  function handleGoBack() {
+    navigation.goBack();
+  }
+
   return (
     <CarDetailsContainer>
-      <Header>
-        <BackButton onPress={() => {}} />
-      </Header>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
 
-      <CarImages>
-        <ImageSlider imagesUrl={["https://freepngimg.com/thumb/audi/35227-5-audi-rs5-red.png"]} />
-      </CarImages>
+      <Animated.View
+        style={[headerStyleAnimation, styles.header, { backgroundColor: theme.colors.background_secondary }]}
+      >
+        <Header>
+          <BackButton onPress={handleGoBack} />
+        </Header>
 
-      <Content>
+        <Animated.View style={[sliderCarsStyleAnimation]}>
+          <CarImages>
+            <ImageSlider imagesUrl={car.photos} />
+          </CarImages>
+        </Animated.View>
+      </Animated.View>
+
+      <Animated.ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingTop: getStatusBarHeight() + 160
+        }}
+        showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      >
         <Details>
           <Description>
-            <Brand>Lamborghini</Brand>
-            <Name>Huracan</Name>
+            <Brand>{car.brand}</Brand>
+            <Name>{car.name}</Name>
           </Description>
 
           <Rent>
-            <Period>Ao dia</Period>
-            <Price>R$ 580</Price>
+            <Period>{car.rent.period}</Period>
+            <Price>R$ {car.rent.price}</Price>
           </Rent>
         </Details>
 
-        <Acessories>
-          <Accessory name="380Km/h" icon={SpeedSvg} />
-          <Accessory name="3.2s" icon={AccelerationSvg} />
-          <Accessory name="800 HP" icon={ForceSvg} />
-          <Accessory name="Gasolina" icon={GasolineSvg} />
-          <Accessory name="Auto" icon={ExchangeSvg} />
-          <Accessory name="2 pessoas" icon={PeopleSvg} />
-        </Acessories>
+        <Accessories>
+          {car.accessories.map(accessory => (
+            <Accessory key={accessory.type} name={accessory.name} icon={getAccessotyIcon(accessory.type)} />
+          ))}
+        </Accessories>
 
-        <About>
-          About text About text About text About text About text About text About text About text About text About text
-          About text About text
-        </About>
-      </Content>
+        <About>{car.about}</About>
+      </Animated.ScrollView>
+
+      <Footer>
+        <Button title="Escolher período do aluguel" onPress={handleGoToSchedulingScreen} />
+      </Footer>
     </CarDetailsContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    position: "absolute",
+    overflow: "hidden",
+    zIndex: 1
+  }
+});
