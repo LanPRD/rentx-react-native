@@ -35,7 +35,6 @@ A proposta deste repositório é aquirir conhecimentos em **React Native** utili
 - Typescript
 - Styled Components
 - React Navigation
-- React Hook Form
 - date-fns
 
 <br>
