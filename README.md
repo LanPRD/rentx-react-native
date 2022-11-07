@@ -29,9 +29,6 @@ A proposta deste repositório é aquirir conhecimentos em **React Native** utili
 
 - React Native
   - Expo
-    - React Native Gesture Handler
-    - React Native SVG
-    - React Native Async Storage
 - Typescript
 - Styled Components
 - React Navigation
